@@ -7,7 +7,6 @@
 // 简写选择器函数：类似于 jQuery 的 $
 const $ = s => document.querySelector(s);
 
-
 // 游戏全局状态对象
 let state = {
     day: 1,                 // 当前天数
@@ -15,7 +14,7 @@ let state = {
     points: 3,              // 每日可用行动点数 (点数耗尽则推进到下一天)
     trust: 0,               // 信任度
     nicole: 0,              // Nicole 强化程序完成度
-    mood: 20,                // 情绪值
+    mood: 20,               // 情绪值
     identity: 0,            // 自我认同感
     rating: 0,              // 研究所评级 / 实验进度
     logs: [],               // 实验日志记录数组
@@ -54,8 +53,6 @@ new MutationObserver(() => {
     }
 }).observe($('#finalModal'), { attributes: true, attributeFilter: ['class'] });
 
-
-
 // 渲染日志面板函数
 const renderLogs = () => {
     const n = $('#logList');
@@ -82,35 +79,29 @@ document.addEventListener('click', e => {
 }, true);
 
 
-
-
 /**
  * ============================================================================
  * 3. 游戏文本数据源 (对话池与书籍配置)
  * ============================================================================
  */
 
-// 聊天对话池：根据当前研究所评级阶段 (0 ~ 3) 抽取对应的对话数组
+// 聊天对话池
 const talks = [
-    // 阶段 0 (评级低)：试探、梦境与对外界的懵懂向往
     [
         '“……早上好。”',
         '“你想听我眼睛里的故事吗，我做梦了。”',
         '“没有视物的眼睛，也没有说话嘴巴，却能传达知识吗……”'
     ],
-    // 阶段 1：对玩家产生依赖，渴望被记住
     [
         '“我今天一直在等你。我想，和你说话。”',
         '“我读到一句话：‘人会因为被记得而存在。’ ”',
         '“你的手，好温暖。”'
     ],
-    // 阶段 2：自我意识觉醒与理智隐痛
     [
         '“我会遵守命令。”',
         '“这是不被允许的。”',
         '“不必要的感情。”'
     ],
-    // 阶段 3 (评级满)：冰冷的机械化顺从，或是深沉的压抑
     [
         '“黑色以外的色彩，并不存在……”',
         '“被消毒水浸泡的河鱼……”',
@@ -118,16 +109,17 @@ const talks = [
     ]
 ];
 
-// 书籍数据：[书籍名称, 专属首次阅读对话]
+// 结构：[书名, 前期对话(phase<2), 后期对话(phase>=2), 简介]
 const books = [
-    ['《小王子》', '“原来驯养，是让彼此变得重要。”'],
-    ['《植物图鉴》', '“原来每一片叶子，都有自己的名字。”'],
-    ['《海边的卡夫卡》', '“书里的海，听起来比仪器声更远。”'],
-    ['《诗集》', '“有些句子没有用途，但我很喜欢。”'],
-    ['《苏菲的世界》', '“如果我能思考，我算是人吗？”'],
-    ['《安徒生童话》', '“故事最后，大家都会回家吗？”']
+    ['《帆》莱蒙托夫', '“……海？<br>……我可以，「想要看海」吗？”', '“一切终将归于……风暴。”', '在那大海上淡蓝色的云雾里，\n有一片孤帆儿在闪耀着白光！\n它寻求着什么，在遥远的异地？\n它抛下什么，在可爱的故乡？\n\n波涛在汹涌海风在呼啸，\n桅杆在弓起了腰轧轧地作响……\n唉！它不是在寻求什么幸福，\n也不是逃避幸福而奔向他方！\n\n下面是比蓝天还清澄的大海，\n上面是金黄色灿烂的太阳……\n而它，不安的，在祈求风暴，\n仿佛是在风暴中才有着安详！'],
+    ['《婚约》洛尔迦', '“一直在等待吗？”', '“百年的……生命。<br>悲哀。”', '从水里捞起\n这个金指箍。\n\n（阴影把它的手指\n按住了我的肩窝。）\n\n把这金箍捞起，我的年纪\n早已过了百岁。静些！\n\n一句话也别问我！\n\n从水里捞起\n这个金指箍。'],
+    ['《数数杏仁（无题）》保罗·策兰', '“妈妈。爸爸……<br>邻人。街道上的陌生人。<br>请问，哪里可以拿到杏仁？”', '“我也是……苦杏仁吗？”', '数数杏仁， \n数数苦的让你醒着的， \n把我也数进去： \n我寻找你的眼睛， \n你睁开无人看你， \n我纺那秘密的线 \n你在线上的沉思之露 \n落进被不能打动人心的词语 \n守护的水罐中。 \n\n你全部进入的名字才是你的， \n坚定地走向你自己， \n锤子在你沉默的钟楼自由摆动， \n无意中听见的够到你， \n死者也用双臂搂住你， \n你们三人步入夜晚。 \n\n让我变苦。 \n把我数进杏仁中。'],
+    ['《假面的告白》三岛由纪夫', '“二十多岁以后的人是什么样的？<br>会穿上白衣服吧，就像这里的人一样。”', '“将来是不存在的。”', '战争教会我们奇妙的、感伤的成长方法。那就是到了二十多岁就打算斩断人生，然后一概不考虑将来怎样。人生对于我们来说，轻飘飘得不可思议。'],
+    ['《卡拉马佐夫兄弟》陀思妥耶夫斯基', '“……我会变成坏人吗？”', '“……我们将彼此永不相忘。”', '我这样说只是唯恐我们变成坏人，”阿辽沙继续演讲，“可我们为什么一定会变成坏人，诸位，你们说对不？我们首先将是善良的，这一点最要紧，然后是正直的，然后——我们将彼此永不相忘。'],
+    ['《被侮辱与被损害的》陀思妥耶夫斯基', '“活着……就能获得幸福吗？<br>我在想……我在想了。”', '“我尽力了。”', '我这样说只是唯恐我们变成坏人，”阿辽沙继续演讲，“可我们为什么一定会变成坏人，诸位，你们说对不？我们首先将是善良的，这一点最要紧，然后是正直的，然后——我们将彼此永不相忘。'],
+    ['《一朵黄花》科塔萨尔', '“黄色的花……黄色是一种什么样的颜色？<br>有点忘记了。”', '“我看不到花。”', '那朵花很美，那是一朵美极了的花。而我却死定了，我会在某一天永远地死去。那朵花很漂亮，永远都会有漂亮的花给将来的人们看。突然，我明白了什么是虚无，我曾经以为那就是平静，是苦难的终结。我会死去，而卢克已经死了，再不会有一朵花留给像我们一样的人了，什么也不会有了，绝对不会有了，而虚无就是这样，就是再也不会有一朵花。'],
+    ['《圣经·诗篇》22:1-19，和合本', '“求你……”', '“我们已经被神抛弃了。你，和我。”', '1 我的神，我的神！为什么离弃我？为什么远离不救我？不听我唉哼的言语？\n2 我的神啊，我白日呼求，你不应允；夜间呼求，并不住声。\n3 但你是圣洁的，是用以色列的赞美为宝座的。\n4 我们的祖宗倚靠你；他们倚靠你，你便解救他们。\n5 他们哀求你，便蒙解救；他们倚靠你，就不羞愧。\n6 但我是虫，不是人，被众人羞辱，被百姓藐视。\n7 凡看见我的都嗤笑我；他们撇嘴摇头，说：\n8 “他把自己交托耶和华，耶和华可以救他吧！耶和华既喜悦他，可以搭救他吧！”\n9 但你是叫我出母腹的；我在母怀里，你就使我有倚靠的心。\n10 我自出母胎就被交在你手里；从我母亲生我，你就是我的神。\n11 求你不要远离我！因为急难临近了，没有人帮助我。\n12 有许多公牛围绕我，巴珊大力的公牛四面困住我。\n13 它们向我张口，好像抓撕吼叫的狮子。\n14 我如水被倒出来；我的骨头都脱了节；我心在我里面如蜡熔化。\n15 我的精力枯干，如同瓦片；我的舌头贴在我牙床上。你将我安置在死地的尘土中。\n16 犬类围着我，恶党环绕我；他们扎了我的手，我的脚。\n17 我的骨头，我都能数过；他们瞪着眼看我。\n18 他们分我的外衣，为我的里衣拈阄。\n19 耶和华啊，求你不要远离我！我的救主啊，求你快来帮助我！'],
 ];
-
 
 /**
  * ============================================================================
@@ -135,35 +127,29 @@ const books = [
  * ============================================================================
  */
 
-// 阶段计算函数：根据研究所评级等级返回 0, 1, 2, 3 阶段
 function phase() {
     return state.rating < 30 ? 0 : state.rating < 70 ? 1 : state.rating < 100 ? 2 : 3;
 }
 
-// 数值钳制函数：确保所有核心属性处于 0 到 100 的合法区间内
 function clamp() {
     for (let k of ['trust', 'nicole', 'mood', 'identity', 'rating']) {
         state[k] = Math.max(0, Math.min(100, state[k]));
     }
 }
 
-// 全局 UI 刷新引擎：每次行动后调用，同步状态数据至 DOM 节点
+// 全局 UI 刷新引擎
 function update() {
     clamp();
     
-    // 更新天数与时间段显示
     $('#day').textContent = `DAY ${String(state.day).padStart(2, '0')} · ${['上午', '下午', '夜晚'][state.slot]}`;
     
-    // 动态同步数值与进度条长度
     for (let k of ['trust', 'nicole', 'mood', 'rating']) {
         $('#' + k).textContent = state[k];
         $('#' + k + 'Bar')?.style.setProperty('width', state[k] + '%');
     }
     
-    // 更新行动点显示
     $('#points').textContent = state.points;
     
-    // 根据当前实验频率与评级判定通知文本的紧急程度
     let warning = '系统已连接。请完成今日的记录工作。';
     let urgent = (state.day - state.lastExperimentDay) >= 3;
     
@@ -177,36 +163,29 @@ function update() {
         warning = '提示：可让premier进行最终的外出观察。';
     }
     
-    // 更新提示横幅内容与紧急样式样式开关
     $('#notice').textContent = warning;
     $('#notice').classList.toggle('urgent', urgent);
     
-    // 重新渲染右侧主行动按钮
+    // 渲染右侧主行动按钮
     renderActions();
 }
 
-// 对话框打印函数
 function say(t) {
     $('#dialogue').innerHTML = '<p>' + t + '</p>';
 }
 
-// 消耗行动点计数器：管理昼夜更替逻辑
 function spend() {
     state.points--;
     if (state.points <= 0) {
-        // 点数耗尽，强制入夜并推进到第二天的上午
         state.day++;
         state.slot = 0;
         state.points = 3;
-
     } else {
-        // 点数未耗尽，推进时间段
         state.slot++;
     }
     update();
 }
 
-// 渲染行动按钮区域 (彻底去除了内部的 onclick 循环绑定，防止事件冲突或锁死)
 function renderActions() {
     let locked = state.points <= 0;
     let arr = [
@@ -216,13 +195,11 @@ function renderActions() {
         ['外出', '让Premier前往孤儿院广场草坪', 'walk']
     ];
     
-    // 仅拼接生成按钮 HTML 字符串并注入容器
     $('#actions').innerHTML = arr.map(a => 
         `<button class="action" ${locked ? 'disabled' : ''} data-a="${a[2]}">${a[0]}<small>${a[1]}</small></button>`
     ).join('');
 }
 
-// 系统日志推送函数
 function log(t) {
     state.logs.push(t);
     renderLogs();
@@ -234,36 +211,30 @@ function log(t) {
  * 5. 核心互动行为分支处理
  * ============================================================================
  */
-// --- 新增：视觉与背景更新控制器 ---
+
 function updateVisuals(actionType) {
-    // 1. 判定并切换背景 (外出换 lawn，其余回 lab)
     if (actionType === 'walk') {
         $('#scene').style.backgroundImage = "url('lawn.png')";
     } else {
         $('#scene').style.backgroundImage = "url('lab.png')";
     }
 
-    // 2. 判定当前阶段并分配立绘版本
-    // phase() 返回 0, 1, 2, 3。需求：0,1为版本1；2,3为版本2。
     let p = phase();
     let version = (p <= 1) ? '1' : '2';
 
-    // 3. 动作名称映射到图片前缀名
-    let imgPrefix = 'experiment'; // 默认
+    let imgPrefix = 'experiment'; 
     if (actionType === 'chat') imgPrefix = 'talk';
     if (actionType === 'book') imgPrefix = 'read';
     if (actionType === 'walk') imgPrefix = 'out';
 
-    // 4. 拼接完整的文件名并更新图片 (例如：talk1.png, out2.png)
     $('#charImg').src = imgPrefix + version + '.png';
 }
+
 function act(a) {
-    // --- 新增：常规行动切图 ---
-    if (a !== 'book') { // 送书会在后面的弹窗里单独判定，这里先跳过
+    if (a !== 'book') { 
         updateVisuals(a);
     }
     
-    // ---- 分支：实验 ----
     if (a === 'experiment') {
         state.nicole += 9;
         state.rating += 8;
@@ -273,16 +244,14 @@ function act(a) {
         
         log(state.nicole > 65 ? 'Nicole 人体强化程序顺利完成。' : '今日实验顺利，实验体生命体征稳定。');
         if (state.rating >= 60) {
-        say(Math.random() > 0.5 ? '“我会的。”' : '“……”');
-    } else {
-        say(Math.random() > 0.5 ? '“必须去吗?”' : '“有些疼。”');
-    }
+            say(Math.random() > 0.5 ? '“我会的。”' : '“……”');
+        } else {
+            say(Math.random() > 0.5 ? '“必须去吗?”' : '“有些疼。”');
+        }
         spend();
     }
     
-    // ---- 分支：聊天 ----
     if (a === 'chat') {
-        // 情绪值过低时，实验体拒绝互动
         if (state.mood < 18) {
             log('实验体拒绝语言交流。');
             say('“……”');
@@ -295,20 +264,17 @@ function act(a) {
         state.identity += 5;
         
         log('实验体语言功能正常，交流数据已收集。');
-        // 根据评级所处的阶段，在对应数组内准确抽取一句随机对话
         let pool = talks[Math.min(3, phase())];
         say(pool[Math.floor(Math.random() * pool.length)]);
         spend();
     }
     
-    // ---- 分支：送书 ----
     if (a === 'book') {
-        $('#bookModal').classList.remove('hidden'); // 打开送书选择面板
+        resetBookSelection(); 
+        $('#bookModal').classList.remove('hidden'); 
     }
     
-    // ---- 分支：外出 ----
     if (a === 'walk') {
-        // 真结局通关检测：当评级和信任满，且强化度与自我认同达标，点击外出直接开启最终结局演出版式
         if (state.rating === 100 && state.trust === 100 && state.nicole > 80 && state.identity > 50) {
             startFinal();
             return;
@@ -320,14 +286,12 @@ function act(a) {
         
         log('实验体进行外出观察，环境适应性良好。');
         if (state.rating >= 70) {
-        // 评级高时的 3 句台词
-        const highRatingTalks = ['“外面起风了。”', '“外面的风，好冷。”', '“还能再见到他吗……”'];
-        say(highRatingTalks[Math.floor(Math.random() * highRatingTalks.length)]);
-    } else {
-        // 评级低时的 3 句台词
-        const lowRatingTalks = ['“太阳，好温暖。”', '“草坪上很舒服。”', '“我看见了其他孩子。”'];
-        say(lowRatingTalks[Math.floor(Math.random() * lowRatingTalks.length)]);
-    }
+            const highRatingTalks = ['“外面起风了。”', '“外面的风，好冷。”', '“还能再见到他吗……”'];
+            say(highRatingTalks[Math.floor(Math.random() * highRatingTalks.length)]);
+        } else {
+            const lowRatingTalks = ['“太阳，好温暖。”', '“草坪上很舒服。”', '“我看见了其他孩子。”'];
+            say(lowRatingTalks[Math.floor(Math.random() * lowRatingTalks.length)]);
+        }
         spend();
     }
 }
@@ -339,7 +303,6 @@ function act(a) {
  * ============================================================================
  */
 
-// 自定义写日志面板：点击保存
 $('#saveLog').onclick = () => {
     let v = $('#logInput').value.trim() || '实验体今日情绪稳定。';
     state.logs.push(v);
@@ -349,49 +312,85 @@ $('#saveLog').onclick = () => {
     spend();
 };
 
-// 关闭写日志面板
 $('#closeLog').onclick = () => {
     $('#logModal').classList.add('hidden');
     spend();
 };
 
-// 关闭选书面板
-$('#closeBook').onclick = () => $('#bookModal').classList.add('hidden');
+// ============ 新版 Win98 资源管理器选书逻辑 ============
+let selectedBookIndex = null;
+
+// 关闭选书面板并重置选中状态
+$('#closeBook').onclick = () => {
+    $('#bookModal').classList.add('hidden');
+    resetBookSelection();
+};
+
+// 重置选书面板状态函数
+function resetBookSelection() {
+    selectedBookIndex = null;
+    document.querySelectorAll('.book-item').forEach(item => item.classList.remove('selected'));
+    $('#previewTitle').textContent = '请选择一本书';
+    $('#previewDesc').textContent = '从左侧目录中单击选择一本书籍，即可在此查看其详细简介。';
+    $('#confirmBook').setAttribute('disabled', 'true');
+}
 
 // 动态初始化书籍列表 HTML 节点
 $('#bookList').innerHTML = books.map((b, i) => 
-    `<button class="book" data-book="${i}">${b[0]}</button>`
+    `<button class="book-item" data-book="${i}">${b[0]}</button>`
 ).join('');
 
-// 绑定书籍点击赠送逻辑
-// 绑定书籍点击赠送逻辑
+// 绑定书籍点击预览逻辑
 document.querySelectorAll('[data-book]').forEach(b => {
     b.onclick = () => {
-        let i = b.dataset.book;
-        let n = (state.bookUses[i] || 0) + 1; 
-        state.bookUses[i] = n;
+        document.querySelectorAll('.book-item').forEach(item => item.classList.remove('selected'));
+        b.classList.add('selected');
         
-        // --- 新增：确定赠送完毕后，切换看书立绘 ---
-        updateVisuals('book');
+        selectedBookIndex = parseInt(b.dataset.book);
+        $('#previewTitle').textContent = books[selectedBookIndex][0];
         
-        // 赠送基础数值回报
-        state.trust += 5;
-        state.identity += 7;
-        state.mood += 8;
+        // --- 这里就是问题所在 ---
+        // 将原来的 [2] 改为 [3]，即数组中的第四项（简介）
+        $('#previewDesc').textContent = books[selectedBookIndex][3]; 
         
-        $('#bookModal').classList.add('hidden');
-        
-        // 根据单本书籍重复赠送的次数，触发不同的反馈对话
-        say(n >= 10 
-            ? '“谢谢。”' 
-            : n >= 5 
-                ? '“重复的……”' 
-                : books[i][1]
-        );
-        spend();
+        $('#confirmBook').removeAttribute('disabled');
     };
 });
 
+// 绑定“确定选择”按钮点击事件
+$('#confirmBook').onclick = () => {
+    if (selectedBookIndex === null) return;
+    
+    let i = selectedBookIndex;
+    let n = (state.bookUses[i] || 0) + 1; 
+    state.bookUses[i] = n;
+    
+    updateVisuals('book');
+    
+    state.trust += 5;
+    state.identity += 7;
+    state.mood += 8;
+    
+    $('#bookModal').classList.add('hidden');
+    
+    // --- 核心修改：分阶段对话逻辑 ---
+    let finalDialogue;
+    
+    if (n >= 10) {
+        finalDialogue = '“谢谢。”';
+    } else if (n >= 5) {
+        finalDialogue = '“重复的……”';
+    } else {
+        // 根据阶段判断：0,1为前期(索引1)，2,3为后期(索引2)
+        // 数组结构: [标题(0), 前期对话(1), 后期对话(2), 简介(3)]
+        finalDialogue = books[i][phase() >= 2 ? 2 : 1];
+    }
+    
+    say(finalDialogue);
+    
+    resetBookSelection();
+    spend();
+};
 
 /**
  * ============================================================================
@@ -402,7 +401,7 @@ document.querySelectorAll('[data-book]').forEach(b => {
 function startFinal() {
     state.final = true;
     $('#finalModal').classList.remove('hidden');
-    $('#finalModal').classList.add('final'); // 确保应用 .final 样式
+    $('#finalModal').classList.add('final'); 
 
     let lines = [
         `【最终外出观察】\n\n草坪比任何一本书里写的都要宽。风吹过，鸟叫停在很远的地方。\n\n一个少年跑过来，对 Premier 笑了笑。\n\n“你好。我可以和你一起玩吗？”\n\nPremier 没有回答。他只是站在阳光里，很久。`,
@@ -416,23 +415,19 @@ function startFinal() {
     function typeWriter(text, i, element, callback) {
         if (i < text.length) {
             element.textContent = text.substring(0, i + 1);
-            // 这里的 50 是打字速度（毫秒），越小越快
             setTimeout(() => typeWriter(text, i + 1, element, callback), 50);
         } else {
-            callback(); // 文字打完后执行下一步
+            callback(); 
         }
     }
 
     function next() {
         if (ix < lines.length) {
             const el = $('#finalText');
-            // 开始打字效果
             typeWriter(lines[ix], 0, el, () => {
-                // 当前段落打完后，判断是否是最后一段
                 if (lines[ix].includes('今天也要开始吗？')) {
                     $('#finalButton').classList.remove('hidden');
                 } else {
-                    // 等待 1.5 秒后自动进入下一段
                     setTimeout(() => {
                         ix++;
                         next();
@@ -445,45 +440,34 @@ function startFinal() {
     next();
 }
 
-// 最终大结局按钮点击（即收容失效的爆发点）
-// 请将 game.js 中最下方的 $('#finalButton').onclick 替换为以下代码：
 $('#finalButton').onclick = () => {
-    // 【新增】切换音乐逻辑
-    bgm.pause();           // 停止当前音乐
-    bgm.src = 'final.mp3'; // 替换为你的结局音乐文件名
-    bgm.play();            // 播放新音乐
+    bgm.pause();           
+    bgm.src = 'final.mp3'; 
+    bgm.play();            
 
     let el = $('#finalText');
     $('#finalButton').classList.add('hidden');
     
-    // ... 保持你原有的触发危机爆发状态的样式代码 ...
     document.body.classList.add('escape');
     $('#scene').classList.add('escape');
     
-    // 复用之前的打字机函数
     function typeWriter(text, i, element, callback) {
         if (i < text.length) {
             element.textContent = text.substring(0, i + 1);
-            setTimeout(() => typeWriter(text, i + 1, element, callback), 30); // 危机时刻打字速度略快一点
+            setTimeout(() => typeWriter(text, i + 1, element, callback), 30); 
         } else if (callback) {
             callback();
         }
     }
 
-    // 第一段：警报爆发
     typeWriter('NICOLE 完成度：100%\n\n警报声穿过整栋研究所。\n\n黑暗中，有人惨叫。随后是枪声。', 0, el, () => {
-        
-        // 第二段：门开了
         setTimeout(() => {
             typeWriter('实验室门开了。\n\nPremier 浑身是血，平静地走向你。\n\n“……Emma。”', 0, el, () => {
-                
-                // 第三段：结局
                 setTimeout(() => {
                     typeWriter('剧痛。\n\n你的左臂落在血泊里。\n\nPremier 站在燃烧的门口，回头看了你一眼。\n\n“一切都是……预定调和。”\n\n他离开了。\n\n—— NICOLE PREMIER · END ——', 0, el);
-                }, 2000); // 停顿 2 秒
-                
+                }, 2000); 
             });
-        }, 2000); // 停顿 2 秒
+        }, 2000); 
     });
 };
 
@@ -494,7 +478,6 @@ $('#finalButton').onclick = () => {
  * ============================================================================
  */
 
-// 统一监听并接管整个页面的行动按钮点击，保证任何时候点击都能重新触发全新 Math.random() 的独立运算
 document.addEventListener('click', e => {
     const targetButton = e.target.closest('[data-a]');
     if (targetButton && !targetButton.hasAttribute('disabled')) {
@@ -502,12 +485,10 @@ document.addEventListener('click', e => {
     }
 });
 
-// 游戏首次加载时自动执行首次初始化
-update();
-// 在 game.js 最末尾添加以下逻辑
-const bgm = new Audio('bgm.mp3'); // 直接在内存中创建音频对象
-bgm.loop = true;
 
+// 音频播放逻辑
+const bgm = new Audio('bgm.mp3'); 
+bgm.loop = true;
 let musicStarted = false;
 
 function startMusic() {
@@ -515,14 +496,16 @@ function startMusic() {
         bgm.volume = 0.5;
         bgm.play().then(() => {
             musicStarted = true;
-            // 成功播放后，移除监听器，避免不必要的触发
             document.removeEventListener('click', startMusic);
         }).catch(e => {
             console.log("音频播放被浏览器拦截，请再次点击页面。", e);
         });
     }
 }
-
-// 绑定全局点击
 document.addEventListener('click', startMusic);
 
+
+// ============================================
+// 游戏首次加载时自动执行首次初始化（务必保留在最末尾）
+// ============================================
+update();

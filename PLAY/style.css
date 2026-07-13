@@ -290,8 +290,17 @@ body{image-rendering:pixelated;background-color:#008080;background-image:repeati
         transform: translateX(-50%);
     }
     
+/* 移动端顶部状态提示 (Notice) 缩小并固定在左上角 */
     .notice {
-        display: none; 
+        position: absolute !important;
+        top: 2px !important;
+        left: 5px !important;
+        bottom: auto !important; /* 取消底部定位 */
+        font-size: 9px !important; /* 进一步缩小字体 */
+        padding: 3px 5px !important;
+        max-width: 60% !important; /* 限制宽度，防止遮挡重要按钮 */
+        z-index: 100 !important; /* 确保显示在最上方 */
+        margin: 0 !important;
     }
 }
 /* ============================================================================

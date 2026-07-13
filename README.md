@@ -19,3 +19,5 @@ Here Comes The Boss!//Beetlemuse
 实验室背景来自sketchfab
 
 Sci-Fi Interior Room//Van_Twinkle
+
+对模型的光源和贴图进行了修改

@@ -107,12 +107,12 @@ body{image-rendering:pixelated;background-color:#008080;background-image:repeati
     letter-spacing: 1px;
 }
 .close{position:absolute;right:8px;top:1px;z-index:5;height:18px;line-height:14px;padding:0 4px!important;font-size:11px!important;background:#d4d0c8!important;border-color:#fff #404040 #404040 #fff!important} /* 让关闭按钮完美嵌套在蓝色窗口栏的右侧，化身经典系统关闭小方块 */
-.books #bookList{display:grid;grid-template-columns:1fr 1fr;gap:8px} /* 赠书单列表内部的左右双列并排图书网格 */
+
 .final{background:#000;color:#eee} /* 最后的黑幕背景类 */
 /* containment failure */.escape .actions{pointer-events:none} /* 【高潮崩坏阶段】：全面锁死侧边栏所有行动点击功能 */
 .escape .action{position:relative;background:#d4d0c8!important;color:#808080!important;border-color:#404040 #ffffff #ffffff #404040!important;transform:none!important;filter:none} /* 收容失效高潮：废弃按钮强行呈现为 Windows 系统遭遇毁灭性卡死状态 */
 .escape .action:nth-child(even){transform:none!important} /* 移除任何现代不规则旋转位移 */
-.escape .action:after{content:'——';position:absolute;inset:-4px;color:#ff0000;font:40px "Arial",sans-serif;text-shadow:none;line-height:1} /* 在所有死锁按钮上覆盖纯红色的报错巨叉“×” */
+.escape .action:after{content:'ERROR';position:absolute;inset:-4px;color:#ff0000;font:40px "Arial",sans-serif;text-shadow:none;line-height:1} /* 在所有死锁按钮上覆盖纯红色的报错巨叉“×” */
 .escape .tube-log{background:#000000;border-color:#404040 #ffffff #ffffff #404040;box-shadow:none} /* 崩溃时日志面板保持白底 */
 .escape .tube-title,.escape .tube-log ol{color:#ff0000;text-shadow:none;font-weight:bold} /* 但里面的文本内容全部强制变轨为恶性系统崩溃报错的 16 色纯红色 */
 .escape .status{background:#d4d0c8;border-color:#404040 #ffffff #ffffff #404040} /* 下方仪表盘保持系统灰 */
@@ -293,4 +293,235 @@ body{image-rendering:pixelated;background-color:#008080;background-image:repeati
     .notice {
         display: none; 
     }
+}
+/* ============================================================================
+ * 9. Win98 资源管理器双栏选书界面样式
+ * ============================================================================
+ */
+
+/* 拓宽弹窗整体尺寸，呈现标准 4:3 比例的软件视图 */
+.book-explorer {
+    width: min(650px, 95vw) !important;
+    display: flex;
+    flex-direction: column;
+    padding: 35px 12px 12px 12px !important;
+}
+
+/* 资源管理器主格网：左侧列表稍宽，右侧属性稍窄 */
+.explorer-body {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 12px;
+    height: 310px;
+    min-height: 0;
+}
+
+.explorer-left, .explorer-right {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+}
+
+/* 子面板栏目名称标签 */
+.pane-title {
+    margin: 0 0 6px 0;
+    font-size: 11px;
+    font-weight: bold;
+    color: #404040;
+    letter-spacing: 0.5px;
+}
+
+/* 左侧书籍目录白底凹陷容器 */
+.book-list {
+    flex-grow: 1;
+    background: #ffffff;
+    border: 2px inset;
+    border-color: #404040 #ffffff #ffffff #404040;
+    overflow-y: auto;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* 经典的 Windows 98 文件夹单行列表项样式 */
+.book-item {
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    color: #000000;
+    text-align: left;
+    padding: 5px 8px;
+    cursor: pointer;
+    font-family: monospace;
+    font-size: 13px;
+    width: 100%;
+}
+
+.book-item:hover {
+    background: #e6e6e6;
+    border-color: #808080;
+}
+
+/* 经典 Win98 的系统高亮深蓝色选中项 */
+.book-item.selected {
+    background: #0a246a !important;
+    color: #ffffff !important;
+    border-color: #000000;
+}
+
+/* 模拟系统文件图标的前缀图标 */
+.book-item::before {
+    content: "📄";
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+/* 右侧属性框白底凹陷容器 */
+.book-preview {
+    flex-grow: 1;
+    background: #ffffff;
+    border: 2px inset;
+    border-color: #404040 #ffffff #ffffff #404040;
+    padding: 12px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 大号拟物像素图书展示 */
+.preview-icon {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 2px;
+}
+
+/* 属性标题 */
+.preview-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px dashed #808080;
+    padding-bottom: 6px;
+    color: #000000;
+}
+
+/* 属性正文 */
+.preview-desc {
+    font-size: 12px;
+    line-height: 1.45;
+    color: #333333;
+}
+
+/* 确认按钮样式 */
+.confirm-btn {
+    width: 100%;
+    padding: 8px 0 !important;
+    font-size: 13px !important;
+}
+
+/* 确定按钮禁用状态（变成灰色且不可交互） */
+.confirm-btn[disabled] {
+    color: #808080 !important;
+    border-color: #ffffff #404040 #404040 #ffffff !important;
+    background: #d4d0c8 !important;
+    cursor: not-allowed;
+    box-shadow: none !important;
+}
+
+
+/* ============================================================================
+ * 10. 移动端 (手机) 竖屏深度适配
+ * ============================================================================
+ */
+@media(max-width: 780px) {
+    /* 选书窗口转为单列垂直堆叠 */
+    .book-explorer {
+        width: calc(100vw - 20px) !important;
+        padding: 35px 8px 8px 8px !important;
+    }
+    
+.explorer-body {
+        display: grid;
+        grid-template-columns: 1fr;
+        /* 修改这里：列表区压缩到 120px，预览区 (1fr) 自动填满剩余空间 */
+        grid-template-rows: 120px 1fr; 
+        gap: 8px;
+        /* 给这个区域设定一个合适的高度，防止撑破 modal */
+        height: 380px; 
+    }
+    
+    .book-list {
+        height: 100%;
+        overflow-y: auto; /* 列表过长时也可以滚动 */
+    }
+    
+    .book-preview {
+        overflow-y: auto; /* 关键点：开启垂直滚动，文本再长也能看完 */
+        padding: 10px;
+        border: 2px inset #fff;
+        background: #e0e0e0;
+        /* 确保文字不会因为溢出而消失 */
+    }
+
+    /* 移动端屏蔽大图标以省出宝贵的预览文字高度 */
+    .preview-icon {
+        display: none;
+    }
+    
+    .confirm-btn {
+        padding: 4px 0 !important;
+        font-size: 12px !important;
+    }
+}
+
+/* 1. 确保父容器是定位基准 */
+.book-explorer {
+    position: relative; /* 让标题栏可以基于窗口本身进行绝对定位 */
+    padding-top: 32px !important; /* 给标题栏留出空间，防止内容被遮挡 */
+}
+
+/* 2. 重写标题栏样式，强制其平铺窗口顶部 */
+.book-explorer .title {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    height: 24px;
+    margin: 0;
+    width: auto; /* 去掉 100%，改用左右定位 */
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    background: #000080; /* Win98 经典深蓝标题 */
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+/* 3. 重写关闭按钮位置 */
+.book-explorer .close {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    z-index: 10; /* 确保在最上层 */
+}
+
+/* 4. 微调主体内容区，防止被上方的标题遮挡 */
+.explorer-body {
+    margin-top: 5px; /* 在标题栏下方留出一小段距离 */
+}
+/* 如果你不想用 <br>，只想用 \n 换行，可以在 CSS 里加这一行 */
+.book-preview {
+    white-space: pre-wrap;
 }

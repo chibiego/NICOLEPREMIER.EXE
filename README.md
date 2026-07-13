@@ -1,5 +1,5 @@
 # NICOLEPREMIER.EXE
-咎狗之血nano同人游戏
+咎狗之血nano同人游戏（还没做完
 
 绘制//吃币
 正在激情绘制立绘中

@@ -1,0 +1,296 @@
+*{box-sizing:border-box} /* 全局重置盒模型 */
+body{margin:0;min-height:100vh;height:100vh;overflow:hidden;background:#008080;color:#000000;font-family:monospace;background-image:none} /* 彻底换成 Win98 标志性的经典纯色桌面死寂绿（#008080），并锁死全屏滚动条 */
+/* PC-98 palette and hard-edged low-resolution presentation */
+body{image-rendering:pixelated;background-color:#008080;background-image:repeating-linear-gradient(0deg,#00000033 0 1px,transparent 1px 2px)} /* 强化物理 CRT 显像管微弱的细密黑扫描线 */
+.pc98{border-color:#ffffff #404040 #404040 #ffffff;background:#d4d0c8;box-shadow:inset 1px 1px 0 #fff, inset -1px -1px 0 #808080} /* 整体大框体完美复刻 Win98 的 3D 标准灰色控制面板与立体凸起边框 */
+.screen,.side,.status{border-color:#404040 #ffffff #ffffff #404040;background:#d4d0c8;box-shadow:inset 1px 1px 0 #808080} /* 各个区域面板重塑为 Windows 经典的凹陷浅灰工作区 */
+.title{background:linear-gradient(90deg,#0a246a,#a6caf0);color:#ffffff;font-weight:bold;padding:3px 6px!important} /* Win98 灵魂所在的经典蓝到亮蓝渐变系统标题栏 */
+.action,.primary,.book{background:#d4d0c8;color:#000000;border:2px solid;border-color:#ffffff #404040 #404040 #ffffff;box-shadow:none;font-weight:normal} /* 按钮彻底回溯为 Win98 经典的灰底黑字凸起按钮 */
+.action:hover,.primary:hover{background:#e6e6e6} /* 经典系统按钮悬停时的微弱浅灰提亮 */
+.scene{filter:contrast(1.4) saturate(1.1) cubic-bezier(0,0,1,1)} /* 强行拉高舞台对比度，模拟老旧 8 位显卡的硬核色彩断层 */
+.status{min-height:85px!important;height:85px!important;padding:10px 12px!important} /* 略微拓宽状态栏以容纳老式属性标签 */
+.status .rating strong{font-size:22px} /* 状态栏评级数值的初始字体大小 */
+.end-card{position:fixed;z-index:99;inset:0;display:grid;place-content:center;text-align:center;background:#000;color:#fff;font:18px monospace;letter-spacing:.3em} /* 通关游戏结束黑屏容器布局 */
+.end-card strong{display:block;margin-top:24px;font-size:56px;color:#ff00ff;letter-spacing:.5em;text-shadow:4px 4px #000000} /* 16色显卡标准的纯霓虹紫大字与纯黑硬边立体阴影 */
+.end-card.hidden{display:none} /* 隐藏结束卡片 */
+#scene .final-text{position:absolute;z-index:50;inset:15px;width:auto;min-height:0;padding:40px 30px;white-space:pre-line;line-height:1.8;text-align:center;background:#000000ff;border:4px double #ffffff;box-shadow:none;font-family:"MS Gothic","SimSun",serif;pointer-events:auto;overflow-y:auto} /* 🎨【核心重构一】：修复舞台内文本渲染。强制层级 z-index:50 顶在最上层，并且自带纵向滚动条防止文本长了显示不全 */
+#scene .primary#finalButton{position:absolute;z-index:60;bottom:25px;left:50%;transform:translateX(-50%);pointer-events:auto} /* 🎨【核心重构二】：将舞台内推进按钮的层级提到 z-index:60，确保永远浮在文本框上面可被点击 */
+.final{display:none!important} /* 默认强制隐藏final相关旧占位组件 */
+.escape #scene .final-text{background:#800000ff;color:#ffffff;box-shadow:none;border:4px double #ff0000} /* 危机爆发时变为标准的 16 色纯红警告框 */
+.scene .notice{position:absolute;z-index:10;left:16px;top:68px;bottom:auto;margin:0;max-width:340px;;border:1px solid #000000;color:#000000;font:11px monospace;text-shadow:none;box-shadow:2px 2px 0 #000000} /* 提示栏变更为经典的白底黑字 Windows 98 简易提示气泡 */
+.scene .notice.urgent{background:#ff0000;border-color:#000000;color:#ffffff;text-shadow:none;box-shadow:2px 2px 0 #000000} /* 紧急警报变为极为刺眼的 16 色纯红底白字系统灾难提示 */
+.tube-log{max-height:180px;overflow-y:auto;overflow-x:hidden;scrollbar-color:#58bb76 #071009;scrollbar-width:thin} /* 降低日志区最大高度以适应单屏显示 */
+.tube-log ol{padding-bottom:8px} /* 日志列表底部的留白空隙 */
+.tube-log{height:180px;min-height:180px;max-height:180px} /* 统一压低日志高度配置 */
+.tube-title{position:sticky;top:0;z-index:3;background:#061009;color:#78ff9f;text-shadow:0 0 7px #35ff6a;padding:2px 4px} /* 日志面板标题依然为经典的终端绿色荧光发光体 */
+.side .notice{position:static;margin:12px 0 0;max-width:none;font-size:11px} /* 侧边栏内部嵌入的辅助说明文本的普通流式布局排版 */
+.status{grid-template-columns:130px 1fr 1fr 1fr 180px!important} /* 第一次重设底部状态栏网格列宽比例 */
+/* Final text performs inside the character screen, not a separate full-screen card. */
+.final{background:transparent!important;pointer-events:none;align-items:start!important;justify-items:start!important} /* 结局全屏剧本容器取消默认背景并穿透点击 */
+.final-text{position:fixed;z-index:80;left:max(3vw,calc((100vw - min(1180px,96vw))/2 + 18px));top:55px;width:calc(min(1180px,96vw) - 318px);height:calc(100vh - 210px);min-height:0;padding:35px 42px;white-space:pre-line;line-height:1.8;text-align:center;background:#ffffff;color: #ffffff;border:4px double #ffffff;box-shadow:2px 2px 10px #ffffff;font-family:"MS Gothic","SimSun",serif;pointer-events:auto;overflow-y:auto} /* 🎨【核心重构三】：修复全屏模式下的剧本显示。层级设为 z-index:80 绝对顶空，自适应视口高度，并开启滚动条支持 */
+.final .primary{position:fixed;z-index:90;bottom:130px;left:calc(50% - 130px);pointer-events:auto} /* 🎨【核心重构四】：将全屏下的推进按钮提到 z-index:90，定位根据单屏高度优化 */
+.escape .final-text{background:#800000df;border-color:#ff0000;box-shadow:none} /* 收容失效最终结局：剧本框转为 16 色高浓血红大警示框 */
+@media(max-width:780px){.final-text{left:18px;top:18px;width:calc(100vw - 36px);height:80vh;padding:45px 20px}.final .primary{bottom:75px;left:calc(50% - 90px)}} /* 移动端小屏幕下的结局文本框与按钮的尺寸收缩自适应适配 */
+.pc98{width:min(1180px,96vw);height:calc(100vh - 40px);min-height:0;margin:20px auto;padding:42px 16px 16px 16px;display:grid;grid-template-columns:1fr 270px;grid-template-rows:1fr 95px;gap:14px;position:relative;background:#d4d0c8;border:3px solid;border-color:#ffffff #404040 #404040 #ffffff;box-shadow:none} /* 高度死锁为视口剩余空间，彻底干掉外层浏览器滚动条 */
+.pc98:before {content:"LAB-CONTROL_SYSTEM.EXE";position:absolute;top:5px;left:5px;right:5px;height:24px;background:linear-gradient(90deg,#0a246a,#a6caf0);color:#ffffff;font-weight:bold;font-size:13px;line-height:24px;padding-left:8px;letter-spacing:1px;box-shadow:none;border:none;text-align:left} /* 大系统最上方完美凭空生成 Windows 98 标准渐变蓝色系统窗口标题栏 */
+.screen,.side,.status,.notice{position:relative;z-index:1;border:2px solid;border-color:#404040 #ffffff #ffffff #404040;background:#d4d0c8} /* 所有子组件批量转为经典的系统级内嵌立体视图效果 */
+.screen{overflow:hidden;height:100%} /* 剪裁主屏幕舞台，防止溢出组件并撑满高 */
+/* 修改原有的 .scene */
+.scene {
+    height: 100%;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+    background-color: #000040;
+    /* 新增背景图片设定 */
+    background-image: url('lab.png');
+    background-size: cover;
+    background-position: center bottom; 
+    transition: background-image 0.3s ease; /* 切换背景时加一点微弱的过渡 */
+}
+/* 修改原有的 .premier */
+.premier {
+    position: absolute;
+    bottom: 10px; /* 根据你立绘的脚部位置自行微调 */
+    left: 50%;
+    transform: translateX(-50%); /* 让角色永远居中 */
+    height: 100%; /* 限制最大高度，防止角色顶出屏幕 */
+    z-index: 3;
+}
+
+.premier img {
+    height: 120%;
+    width: auto;
+    display: block;
+}
+.scene:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,transparent 49%,#ff000033 49% 51%,transparent 51%),repeating-linear-gradient(0deg,#00000066 0 2px,transparent 2px 4px);pointer-events:none} /* 修复光栅遮挡：加z-index与穿透，防止其阻挡结局剧本层鼠标事件 */
+.scanlines{position:absolute;inset:0;z-index:2;background:repeating-linear-gradient(0deg,transparent 0 2px,#00000022 3px);pointer-events:none} /* 全屏硬件光栅错位虚化纹理 */
+.warning-lines{position:absolute;right:12%;height:100%;width:4px;background:#ff0000;box-shadow:none} /* 物理16色纯红危重警示分割线 */
+.warning-lines:after {content:"";position:absolute;top:31%;left:-105px;width:213px;height:4px;background:#ff0000;box-shadow:none} /* 伪元素：与激光线交叉的横向红色射线警示结构 */
+.lab-id{position:absolute;top:18px;left:18px;color:#00ffff;line-height:1.6;text-shadow:none;font-weight:bold} /* 16色标准的纯青色点阵研究所识别字 */
+
+.dialogue{position:absolute;z-index:10;left:12px;right:12px;bottom:12px;min-height:100px;height:100px;padding:24px 18px 12px 18px;background:#000000df;border:4px double #ffffff;box-shadow:none;font:16px/1.5 "MS Gothic","SimSun",serif;color:#ffffff;overflow:visible} /* 将 overflow 修改为 visible，允许内部的姓名牌向上溢出显示 */
+.dialogue p{margin:0} /* 清除对话内容段落间距 */
+.nameplate{position:absolute;top:-23px;left:11px;z-index:11;background:#0a246a;color:#ffffff;padding:2px 15px;font-weight:bold;border:1px solid #ffffff} /* 追加 z-index:11 强制将名字标签提到最上层，防止被遮挡 */
+.side{padding:10px;background:#d4d0c8;display:flex;flex-direction:column;justify-content:space-between;height:100%} /* 使用flex让侧边栏内部元素在限高内完美自适应分布 */
+.title{padding:5px 7px;background:linear-gradient(90deg,#0a246a,#a6caf0);color:#ffffff;font-weight:bold;text-align:left} /* 子模块标题栏全面覆写为 Win98 渐变色标准系统栏 */
+.actions{display:grid;gap:6px;margin:5px 0} /* 互动行动指令按钮区域的网格垂直排版 */
+.action,.primary,.book{background:#d4d0c8;color:#000000;border:2px solid;border-color:#ffffff #404040 #404040 #ffffff;padding:8px 5px;font-family:monospace;cursor:pointer;font-size:15px;font-weight:bold} /* 微调按钮内边距和字体，确保低分辨率屏幕下不溢出 */
+.action:hover,.primary:hover{background:#f0f0f0} /* 按钮鼠标悬停时的经典淡灰色变化 */
+.action small{display:block;font-size:11px;color:#404040;font-weight:normal} /* 按钮内部的次级说明文字同步放大到 11px */
+.points{text-align:right;color:#000000;margin-top:2px} /* 行动点区域文本转为纯黑色 */
+.points strong{font-size:20px;color:#000080} /* 剩余点数数字放大并直接渲染为老式 Windows 经典纯藏蓝色 */
+.tube-log{margin-top:8px;min-height:0;padding:6px;background:#061009;border:2px inset #4b7057;box-shadow:inset 0 0 16px #15ff7033;flex-grow:1} /* 允许日志面板自由填充满侧边栏剩余空间 */
+.tube-title{color:#78ff9f;text-shadow:0 0 7px #35ff6a;font-weight:bold;border-bottom:1px solid #235b36;padding-bottom:4px} /* 完美保留发光：绿色荧光文本发光体标题 */
+.tube-log ol{margin:4px 0;padding-left:24px;color:#71f89a;line-height:1.45;text-shadow:0 0 5px #35ff70} /* 内嵌的日志文本 100% 维持充满安全感的黑客绿物理外溢发光效果 */
+.status{grid-column:1/3;display:grid;grid-template-columns:130px 1fr 1fr 1fr 180px 100px;gap:12px;align-items:center;padding:10px 14px;height:100%} /* 最终覆盖确定状态栏 */
+.day,.rating,.identity{color:#000000;font-weight:bold;font-size:14px} /* 底部状态栏基础描述字放大到 14px */
+.stat{display:grid;grid-template-columns:52px 1fr 25px;gap:5px;align-items:center;font-size:13px;font-weight:bold} /* 进度条两侧的数值和属性缩写文字均放大至 13px 粗体 */
+.stat>div{height:12px;border:2px solid;border-color:#404040 #ffffff #ffffff #404040;background:#ffffff} /* 进度条凹轨彻底变轨为 Windows 经典输入框的凹陷白底样式 */
+.stat b{display:block;height:100%;width:20%;background:#000080} /* 进度条填充体彻底改写为 Windows 98 专用的纯藏蓝色块 */
+.nicole b{background:#800000} /* Nicole进化浓度进度条修改为 16 色纯暗红色块 */
+.mood b{background:#008000} /* 情绪平稳度进度条修改为 16 色纯标准深绿色块 */
+.rating strong{font-size:27px;color:#0a246a} /* 评级大数字使用 Windows 经典藏蓝进行强调放大 */
+.identity span{color:#008000;font-weight:bold} /* 认知度文本状态字体的纯绿表现 */
+.notice{position:absolute;left:30px;bottom:115px;z-index:2;padding:6px 10px;background:#ffff4e;color:#000000;border:1px solid #000000;box-shadow:2px 2px 0 #000000} /* 彻底改为 Windows 经典的黄色便签提醒条 */
+.modal{position:fixed;inset:0;z-index:30;display:grid;place-items:center;background:#00000066} /* 浮层弹窗系统的黑纱半透明全屏遮罩背板 */
+.hidden{display:none} /* 隐藏控制通用类 */
+.paper{width:min(500px,90vw);padding:35px 25px 25px 25px;background:#d4d0c8;color:#000000;border:2px solid;border-color:#ffffff #404040 #404040 #ffffff;position:relative;box-shadow:4px 4px 20px #000000} /* 书本弹窗转换为标准的 Windows 98 弹出式系统对话框 */
+.paper .title {
+    background: linear-gradient(90deg, #0a246a, #a6caf0); /* 蓝色渐变 */
+    color: #ffffff;
+    padding: 4px 8px;
+    margin: -35px -25px 20px -25px; /* 这一行至关重要：负边距让它顶满弹窗顶部 */
+    border-bottom: 2px solid #404040;
+    font-weight: bold;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+.close{position:absolute;right:8px;top:1px;z-index:5;height:18px;line-height:14px;padding:0 4px!important;font-size:11px!important;background:#d4d0c8!important;border-color:#fff #404040 #404040 #fff!important} /* 让关闭按钮完美嵌套在蓝色窗口栏的右侧，化身经典系统关闭小方块 */
+.books #bookList{display:grid;grid-template-columns:1fr 1fr;gap:8px} /* 赠书单列表内部的左右双列并排图书网格 */
+.final{background:#000;color:#eee} /* 最后的黑幕背景类 */
+/* containment failure */.escape .actions{pointer-events:none} /* 【高潮崩坏阶段】：全面锁死侧边栏所有行动点击功能 */
+.escape .action{position:relative;background:#d4d0c8!important;color:#808080!important;border-color:#404040 #ffffff #ffffff #404040!important;transform:none!important;filter:none} /* 收容失效高潮：废弃按钮强行呈现为 Windows 系统遭遇毁灭性卡死状态 */
+.escape .action:nth-child(even){transform:none!important} /* 移除任何现代不规则旋转位移 */
+.escape .action:after{content:'——';position:absolute;inset:-4px;color:#ff0000;font:40px "Arial",sans-serif;text-shadow:none;line-height:1} /* 在所有死锁按钮上覆盖纯红色的报错巨叉“×” */
+.escape .tube-log{background:#000000;border-color:#404040 #ffffff #ffffff #404040;box-shadow:none} /* 崩溃时日志面板保持白底 */
+.escape .tube-title,.escape .tube-log ol{color:#ff0000;text-shadow:none;font-weight:bold} /* 但里面的文本内容全部强制变轨为恶性系统崩溃报错的 16 色纯红色 */
+.escape .status{background:#d4d0c8;border-color:#404040 #ffffff #ffffff #404040} /* 下方仪表盘保持系统灰 */
+.escape .stat label,.escape .rating,.escape .identity,.escape .day{color:#ff0000!important;text-shadow:none} /* 所有系统文字红字报警 */
+.escape .stat b{background:#ff0000!important;animation:danger .4s steps(2) infinite} /* 所有属性进度条化为纯红并抽动硬闪烁 */
+.escape .rating:before,.escape .identity:before{content:'[FATAL] ';color:#ff0000} /* 属性前方强电突入一串16色纯红系统级致命错误代码头 */
+.escape .scene{filter:none;background:#000000} /* 主舞台进入 PC-98 游戏经典的毁灭大黑幕 */
+.escape .scene:after{content:"";position:absolute;inset:0;z-index:8;background:repeating-linear-gradient(45deg,#ff0000 0 4px,transparent 4px 8px);opacity:0.35} /* 玻璃碎裂替换为全屏经典的斜线硬件封死覆盖层 */
+.escape .dialogue{border-color:#ff0000;background:#000000;color:#ff0000} /* 对话框转为纯黑底纯红字报错窗口 */
+.escape .final{background:#000000bb} /* 终幕黑纱 */
+@keyframes danger{50%{opacity:.1}} /* 警报动画关键帧 */
+/* 移动端 (手机) 竖屏深度适配[cite: 3] */
+/* 移动端 (手机) 竖屏深度适配 */
+@media(max-width: 780px) {
+    /* 1. 解决横向多余滚动空间 */
+    body {
+        overflow-y: auto; 
+        overflow-x: hidden; /* 核心修复：强行切断右侧不明溢出空间 */
+        height: auto;
+        min-height: 100vh;
+        padding-bottom: 20px;
+    }
+    
+    .pc98 {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        margin: 0;
+        /* 4. 增加顶部 padding，将主画面下推，为绝对定位的系统蓝色导航栏腾出空间 */
+        padding: 38px 8px 8px 8px; 
+        border: none; 
+    }
+    
+    /* 对齐顶部大窗口的蓝色标题条 */
+    .pc98:before {
+        top: 8px;
+        left: 8px;
+        right: 8px;
+    }
+
+    /* 主舞台视口微调 */
+    .screen {
+        height: 300px;
+        flex-shrink: 0;
+        border: 2px solid #404040; 
+    }
+    .premier {
+        left: 50%;
+        transform: translateX(-50%) scale(0.95); 
+        transform-origin: bottom center;
+    }
+    
+    .dialogue {
+        font-size: 14px;
+        padding: 20px 10px 8px 10px;
+        height: 85px;
+        min-height: 85px;
+    }
+    .nameplate {
+        font-size: 12px;
+        padding: 2px 8px;
+        top: -18px;
+    }
+
+    /* 操作区重排 */
+    .side {
+        margin-top: 0px;
+        height: auto;
+        position: relative; /* 2. 为行动点的绝对定位提供锚点 */
+    }
+    
+    .side .title {
+        padding-right: 90px !important; /* 给右侧行动点留出空间，防止文本重叠 */
+    }
+    
+    /* 2. 行动点整合进蓝色标题栏 */
+    .points {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        color: #000000; /* 文本变白以在蓝底上清晰显示 */
+        margin: 0;
+        font-size: 12px;
+        z-index: 10;
+        line-height: 1.2;
+    }
+    .points strong {
+        color: #2d1e5f; /* 核心数字使用复古荧光绿，增强辨识度 */
+        font-size: 15px;
+    }
+
+    .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px; /* 修复了之前代码里 gap: 5x 的错字 */
+    }
+    .action {
+        padding: 2px 4px; 
+    }
+    .tube-log {
+        min-height: 120px;
+        max-height: 120px;
+        margin-top: 5px;
+    }
+
+/* 3. 状态栏精简重排（终极防挤压纯数值版） */
+    .status {
+        display: flex !important;
+        flex-wrap: wrap !important; /* 允许元素自动换行 */
+        justify-content: space-between !important; /* 左右元素两端对齐 */
+        padding: 5px 15px !important;
+        height: auto !important;
+    }
+
+    /* 天数独占100%宽度，霸占第一行 */
+    .day {
+        width: 100%;
+        text-align: left;
+        border-bottom: 2px solid #808080;
+        padding-bottom: 2px;
+        margin-bottom: 0px; /* 和下方的数值彻底拉开距离 */
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    /* 彻底干掉进度条外框和填充 */
+    .stat > div {
+        display: none !important;
+    }
+
+    /* 核心排版：将四个属性变成整齐的两列 */
+    .stat, .rating {
+        width: 40% !important; /* 每个小块占 46%，剩下的 8% 自然形成完美的中间空隙 */
+        display: flex !important;
+        justify-content: space-between !important; /* 标签死死靠左，数字死死靠右 */
+        align-items: center !important;
+        margin-bottom: 0px; /* 上下行之间拉开空间 */
+    }
+
+    /* 统一左侧标签样式 */
+    .stat label {
+        font-size: 12px;
+        color: #000;
+    }
+
+    /* 统一右侧数值样式 */
+    .stat output, .rating strong {
+        display: block !important;
+        font-size: 15px !important; /* 纯数字稍微放大，看着不费眼 */
+        color: #000080; /* 保留 Win98 经典的藏蓝色 */
+        font-weight: bold;
+        text-align: right;
+    }
+
+    /* 评级文字微调，保持和上面的 stat 风格绝对一致 */
+    .rating {
+        font-size: 12px;
+        color: #000;
+        white-space: nowrap;
+    }
+    
+    /* 结局文本框移动端自适应 */
+    .final-text {
+        left: 15px;
+        top: 20px;
+        width: calc(100vw - 30px);
+        height: 75vh;
+        padding: 30px 15px;
+        font-size: 14px;
+    }
+    .final .primary {
+        bottom: 5vh;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .notice {
+        display: none; 
+    }
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NICOLE PREMIER</title><link rel="stylesheet" href="style.css"></head>
+<body><main id="game" class="pc98">
+  <button id="settingsBtn" class="sys-title-btn" title="系统设置">⚙ 设置</button>
+  <section class="screen">
+    <div id="scene" class="scene"><div id="notice" class="notice">系统已连接。请完成今日观察工作。</div><div class="lab-id">LABORATORY N-01<br>SUBJECT: NICOLE PREMIER</div>
+    <div class="premier">
+    <img id="charImg" src="experiment1.png" alt="Premier">
+</div>
+    <div class="dialogue"><div class="nameplate">NICOLE PREMIER</div><div id="dialogue"><p>“……早上好。”</p></div></div>
+  </section>
+  <aside class="side"><div class="title">COMMAND MENU</div><div id="actions" class="actions"></div><div class="points">行动点 <strong id="points">3</strong> / 3</div><div class="tube-log"><div class="tube-title">EXPERIMENT LOG</div><ol id="logList"><li>Hello Premier！等待记录。</li></ol></div></aside>
+  <footer class="status"><div class="day" id="day">DAY 01 · 上午</div><div class="stat"><label>TRUST</label><div><b id="trustBar"></b></div><output id="trust">20</output></div><div class="stat nicole"><label>NICOLE</label><div><b id="nicoleBar"></b></div><output id="nicole">8</output></div><div class="stat mood"><label>EMOTION</label><div><b id="moodBar"></b></div><output id="mood">65</output></div><div class="rating">实验进度 <strong id="rating">0</strong><small>/100</small></div></footer>
+</main>
+<div id="bookModal" class="modal hidden">
+  <div class="paper book-explorer">
+    <div class="title">BOOK_SELECTION</div> 
+    <button class="close" id="closeBook">×</button>
+    
+    <div class="explorer-body">
+      <div class="explorer-left">
+        <p class="pane-title">书籍目录 </p>
+        <div id="bookList" class="book-list"></div>
+      </div>
+
+      <div class="explorer-right">
+        <p class="pane-title">简介</p>
+        <div class="book-preview">
+          <h3 id="previewTitle" class="preview-title">请选择一本书</h3>
+          <div id="previewDesc" class="preview-desc">从左侧目录中单击选择一本书籍，即可在此查看其详细简介。</div>
+        </div>
+        <button id="confirmBook" class="primary confirm-btn" disabled>确定选择</button>
+      </div>
+    </div>
+  </div>
+</div></div><div hidden id="logModal"></div><button hidden id="saveLog"></button><button hidden id="closeLog"></button><textarea hidden id="logInput"></textarea>
+<div id="finalModal" class="modal hidden final"><div id="finalText" class="final-text"></div><button id="finalButton" class="primary hidden">开始实验</button></div><div id="endCard" class="end-card hidden">NICOLE PREMIER<br><strong>END</strong></div>
+<!-- 启动界面 (Z-index最高，覆盖全屏) -->
+<div id="startupScreen" class="modal" style="z-index: 100; background: #008080;">
+  <div class="paper" style="text-align: center; width: min(450px, 90vw);">
+    <div class="title" style="margin: -35px -25px 20px -25px; padding: 4px 8px; background: linear-gradient(90deg, #0a246a, #a6caf0); color: white; text-align: left; border-bottom: 2px solid #404040;">
+      SYSTEM_BOOT
+    </div>
+    <!-- Logo 占位 -->
+    <img id="startupLogo" src="logo.png" alt="游戏LOGO" style="max-width: 250px; min-height: 100px; margin: 10px auto; display: block; ">
+    <!-- 启动文字占位符 -->
+    <p style="font-size: 14px; margin-bottom: 20px;">
+      Hello Premier！<br>请待加载完毕后，登入系统。
+    </p>
+    <!-- 加载状态与登入按钮 -->
+    <p id="loadingStatus" style="font-size: 12px; color: #666;">系统资源加载中，请稍候...</p>
+    <button id="startGameBtn" class="primary hidden" style="width: 100%; padding: 10px; font-weight: bold;">登入ENED系统</button>
+  </div>
+</div>
+
+<!-- 设置弹窗 -->
+<div id="settingsModal" class="modal hidden" style="z-index: 90;">
+  <div class="paper" style="width: min(350px, 90vw);">
+    <div class="title" style="margin: -35px -25px 20px -25px; padding: 4px 8px; background: linear-gradient(90deg, #0a246a, #a6caf0); color: white; text-align: left; border-bottom: 2px solid #404040;">
+      SETTINGS
+    </div>
+    <button class="close" id="closeSettings" style="position: absolute; right: 4px; top: 3px;">×</button>
+    
+    <div style="display: flex; gap: 10px; margin-bottom: 15px; justify-content: space-between;">
+      <button id="muteBtn" class="primary" style="flex: 1; padding: 8px;">静音 BGM</button>
+      <button id="helpBtn" class="primary" style="flex: 1; padding: 8px;">系统帮助</button>
+    </div>
+    
+    <!-- 帮助内容占位（默认隐藏） -->
+    <div id="helpContent" class="preview-desc hidden" style="border: 2px inset #fff; background: #e0e0e0; padding: 12px; height: 180px; overflow-y: auto; white-space: pre-wrap;">感谢游玩！若发现任何bug请电邮1792217361@qq.com
+【划到底部即可查看通关条件】
+【STAFF】
+原作：Nitro CHiRAL
+绘制：吃币
+文本：柃星、吃币
+程序：codex、Gemini、吃币
+音乐：来自freesound
+　Relaxing Chiptune Music by Migfus20
+　Here Comes The Boss! by Beetlemuse
+背景：实验室背景来自sketchfab
+　Sci-Fi Interior Room by Van_Twinkle
+　（游戏中对模型的光源和贴图进行了修改
+
+【通关条件】
+普通结局：研究进度和nicole浓度达到100后，信任值达到80，选择“外出”选项
+（如果未触发结局，就多选择除“实验”外的选项后，再点击“外出”
+隐藏结局：所有值达到100后，再多养养小娜，点击“外出”
+（差分选项中需选择“不封锁实验室”
+</div>
+  </div>
+</div>
+<script src="game.js"></script></body></html>
